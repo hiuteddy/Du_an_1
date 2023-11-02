@@ -4,7 +4,11 @@ plugins {
 
 android {
     namespace = "hieunnph32561.fpoly.du_an_1"
+<<<<<<< HEAD
     compileSdk = 33
+=======
+    compileSdk = 34
+>>>>>>> 6570dc3 (Initial commit)
 
     defaultConfig {
         applicationId = "hieunnph32561.fpoly.du_an_1"
