@@ -36,6 +36,7 @@
         </item>
 
 
+
         <item android:title="Custom">
             <menu>
                 <item android:id="@+id/sub_Pass"
@@ -47,14 +48,20 @@
                     android:title="Đăng xuất"
                     />
 
-                <item android:id="@+id/sub_AddUser"
-                    android:icon="@drawable/baseline_person_add_24"
-                    android:title="Thêm người dùng"
-                    />
                 <item android:id="@+id/sub_ls"
                     android:icon="@drawable/baseline_history_24"
                     android:visible="false"
                     android:title="Lịch sử"
+                    />
+                <item android:id="@+id/sub_giohang"
+                    android:icon="@drawable/baseline_shopping_cart_24"
+                    android:visible="false"
+                    android:title="Lịch sử"
+                    />
+                <item android:id="@+id/sub_taikhoan"
+                    android:icon="@drawable/baseline_history_24"
+                    android:visible="false"
+                    android:title="Tài khoản"
                     />
             </menu>
         </item>

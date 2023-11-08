@@ -1,6 +1,5 @@
 package hieunnph32561.fpoly.du_an_1.database;
 
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -11,78 +10,144 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "duan1";
     public static final int DB_VERSION = 1;
 
+
     public DbHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createLoaiSeriTable = "CREATE TABLE LoaiSeriesDT " +
-                "(maLoaiSeries INTEGER PRIMARY KEY," +
-                " tenLoaiSeries TEXT)";
+        // Tạo bảng LoaiMau
+        String createLoaiMauTable = "CREATE TABLE LoaiMau (" +
+                "maMau INTEGER PRIMARY KEY," +
+                "tenMau TEXT" +
+                ")";
+        db.execSQL(createLoaiMauTable);
 
-        String createDienThoaiTable = "CREATE TABLE DienThoai" +
-                " (maDT INTEGER PRIMARY KEY," +
-                " maLoaiSeries INTEGER," +
-                " tenDT TEXT, " +
-                "giaTien REAL, " +
-                "moTa TEXT, FOREIGN KEY (maLoaiSeries) REFERENCES LoaiSeriesDT(maLoaiSeries))";
+        // Tạo bảng LoaiDienThoai
+        String createLoaiDienThoaiTable = "CREATE TABLE LoaiDienThoai (" +
+                "maLoai INTEGER PRIMARY KEY," +
+                "tenLoai TEXT" +
+                ")";
+        db.execSQL(createLoaiDienThoaiTable);
 
-        String createTaiKhoanTable = "CREATE TABLE TaiKhoan " +
-                "(maTk INTEGER PRIMARY KEY," +
-                " tenDN TEXT , " +
-                "matKhau TEXT)";
-
-        String createKhachHangTable = "CREATE TABLE KhachHang " +
-                "(maKh INTEGER PRIMARY KEY," +
-                " hoTen TEXT," +
-                " dienThoai INTEGER," +
-                " diaChi TEXT)";
-
-        String createHoaDonTable = "CREATE TABLE HoaDon " +
-                "(maHD INTEGER PRIMARY KEY," +
-                " maKH INTEGER," +
-                " maSP INTEGER, " +
-                "tongTien INTEGER," +
-                " ngay DATE, " +
+        // Tạo bảng DienThoai
+        String createDienThoaiTable = "CREATE TABLE DienThoai (" +
+                "maDt INTEGER PRIMARY KEY," +
+                "maLoai INTEGER," +
+                "maMau INTEGER," +
+                "giaTien REAL," +
+                "moTa TEXT," +
+                "tenDt TEXT," +
                 "soLuong INTEGER," +
-                " trangThai INTEGER, " +
-                "FOREIGN KEY (maKH) REFERENCES KhachHang(maKh), " +
-                "FOREIGN KEY (maDT) REFERENCES DienThoai(maDT)," +
-                "FOREIGN KEY (maTk) REFERENCES TaiKhoan(maTk))";
-
-        db.execSQL(createLoaiSeriTable);
+                "FOREIGN KEY (maLoai) REFERENCES LoaiDienThoai(maLoai)," +
+                "FOREIGN KEY (maMau) REFERENCES LoaiMau(maMau)" +
+                ")";
         db.execSQL(createDienThoaiTable);
-        db.execSQL(createTaiKhoanTable);
+
+        // Tạo bảng GioHang
+        String createGioHangTable = "CREATE TABLE GioHang (" +
+                "maGh INTEGER PRIMARY KEY," +
+                "maDt INTEGER," +
+                "maKh INTEGER," +
+                "soLuong INTEGER," +
+                "FOREIGN KEY (maDt) REFERENCES DienThoai(maDt)," +
+                "FOREIGN KEY (maKh) REFERENCES KhachHang(maKh)" +
+                ")";
+        db.execSQL(createGioHangTable);
+
+        // Tạo bảng DonHangChiTiet
+        String createDonHangChiTietTable = "CREATE TABLE DonHangChiTiet (" +
+                "maCt INTEGER PRIMARY KEY," +
+                "maDh INTEGER," +
+                "maDt INTEGER," +
+                "soLuong INTEGER," +
+                "tongTien REAL," +
+                "FOREIGN KEY (maDh) REFERENCES DonHang(maDh)," +
+                "FOREIGN KEY (maDt) REFERENCES DienThoai(maDt)" +
+                ")";
+        db.execSQL(createDonHangChiTietTable);
+
+        // Tạo bảng DonHang
+        String createDonHangTable = "CREATE TABLE DonHang (" +
+                "maDh INTEGER PRIMARY KEY," +
+                "maKh INTEGER," +
+                "ngayDat TEXT," +
+                "trangThai TEXT," +
+                "diaChi TEXT," +
+                "tongTien REAL," +
+                "FOREIGN KEY (maKh) REFERENCES KhachHang(maKh)" +
+                ")";
+        db.execSQL(createDonHangTable);
+
+        // Tạo bảng KhachHang
+        String createKhachHangTable = "CREATE TABLE KhachHang (" +
+                "maKh INTEGER PRIMARY KEY," +
+                "taiKhoan TEXT," +
+                "soDienThoai TEXT," +
+                "email TEXT," +
+                "hoTen TEXT" +
+                ")";
         db.execSQL(createKhachHangTable);
-        db.execSQL(createHoaDonTable);
 
-        // Thêm dữ liệu mẫu
-        db.execSQL("INSERT INTO LoaiSeriesDT (maLoaiSeries, tenLoaiSeries) VALUES (1, 'Series 15')");
-        db.execSQL("INSERT INTO LoaiSeriesDT (maLoaiSeries, tenLoaiSeries) VALUES (2, 'Series 14')");
+        // Chèn dữ liệu vào bảng LoaiMau
+        String insertLoaiMauData = "INSERT INTO LoaiMau (maMau, tenMau) VALUES " +
+                "(1, 'Màu Đen')," +
+                "(2, 'Màu Trắng')," +
+                "(3, 'Màu Xanh')";
+        db.execSQL(insertLoaiMauData);
 
-        db.execSQL("INSERT INTO DienThoai (maDT, maLoaiSeries, tenDT, giaTien, moTa) VALUES (1, 1, 'Điện thoại 1', 1000, 'Mô tả 1')");
-        db.execSQL("INSERT INTO DienThoai (maDT, maLoaiSeries, tenDT, giaTien, moTa) VALUES (2, 2, 'Điện thoại 2', 2000, 'Mô tả 2')");
+        // Chèn dữ liệu vào bảng LoaiDienThoai
+        String insertLoaiDienThoaiData = "INSERT INTO LoaiDienThoai (maLoai, tenLoai) VALUES " +
+                "(1, 'Smartphone')," +
+                "(2, 'Tablet')," +
+                "(3, 'Điện thoại cổ')";
+        db.execSQL(insertLoaiDienThoaiData);
 
-        db.execSQL("INSERT INTO TaiKhoan (maTk, tenDN, matKhau) VALUES (1, 'admin', 'admin')");
-        db.execSQL("INSERT INTO TaiKhoan (maTk, tenDN, matKhau) VALUES (2, 'user', '123')");
+        // Chèn dữ liệu vào bảng DienThoai
+        String insertDienThoaiData = "INSERT INTO DienThoai (maDt, maLoai, maMau, giaTien, moTaTEXT, tenDt TEXT, soLuong INTEGER) VALUES " +
+                "(1, 1, 1, 5000000, 'Điện thoại thông minh màu đen', 'Smartphone A', 10)," +
+                "(2, 1, 2, 6000000, 'Điện thoại thông minh màu trắng', 'Smartphone B', 15)," +
+                "(3, 2, 3, 4000000, 'Máy tính bảng màu xanh', 'Tablet A', 5)";
+        db.execSQL(insertDienThoaiData);
 
-        db.execSQL("INSERT INTO KhachHang (maKh, hoTen, dienThoai, diaChi) VALUES (1, 'Nguyễn Văn A', 123456789, 'Địa chỉ A')");
-        db.execSQL("INSERT INTO KhachHang (maKh, hoTen, dienThoai, diaChi) VALUES (2, 'Nguyễn Văn B', 987654321, 'Địa chỉ B')");
+        // Chèn dữ liệu vào bảng GioHang
+        String insertGioHangData = "INSERT INTO GioHang (maGh, maDt, maKh, soLuong) VALUES " +
+                "(1, 1, 1, 2)," +
+                "(2, 2, 1, 1)," +
+                "(3, 3, 2, 3)";
+        db.execSQL(insertGioHangData);
 
-        db.execSQL("INSERT INTO HoaDon (maHD, maKH,maTK, maSP, tongTien, ngay, soLuong, trangThai) VALUES (1, 1,1, 1, 5000, '2023-09-21', 2, 1)");
-        db.execSQL("INSERT INTO HoaDon (maHD, maKH,maTK,  maSP, tongTien, ngay, soLuong, trangThai) VALUES (2, 2,2, 2, 8000, '2023-09-23', 3, 2)");
+        // Chèn dữ liệu vào bảng DonHangChiTiet
+        String insertDonHangChiTietData = "INSERT INTO DonHangChiTiet (maCt, maDh, maDt, soLuong, tongTien) VALUES " +
+                "(1, 1, 1, 2, 10000000)," +
+                "(2, 2, 2, 1, 6000000)," +
+                "(3, 2, 3, 3, 12000000)";
+        db.execSQL(insertDonHangChiTietData);
+
+        // Chèn dữ liệu vào bảng DonHang
+        String insertDonHangData = "INSERT INTO DonHang (maDh, maKh, ngayDat, trangThai, diaChi, tongTien) VALUES " +
+                "(1, 1, '2023-11-01', 'Đã giao hàng', '123 Đường ABC, Thành phố XYZ', 10000000)," +
+                "(2, 2, '2023-11-03', 'Đang vận chuyển', '456 Đường DEF, Thành phố UVW', 18000000)";
+        db.execSQL(insertDonHangData);
+
+        // Chèn dữ liệu vào bảng KhachHang
+        String insertKhachHangData = "INSERT INTO KhachHang (maKh, taiKhoan, soDienThoai, email, hoTen) VALUES " +
+                "(1, 'tkh001', '0987654321', 'khachhang1@gmail.com', 'Nguyễn Văn A')," +
+                "(2, 'tkh002', '0123456789', 'khachhang2@gmail.com', 'Trần Thị B')";
+        db.execSQL(insertKhachHangData);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         if (i != i1) {
-            db.execSQL("drop table if exists TaiKhoan");
-            db.execSQL("drop table if exists DienThoai");
-            db.execSQL("drop table if exists LoaiSeriDienThoai");
-            db.execSQL("drop table if exists KhachHang");
-            db.execSQL("drop table if exists HoaDon");
+            db.execSQL("DROP TABLE IF EXISTS LoaiMau");
+            db.execSQL("DROP TABLE IF EXISTS LoaiDienThoai");
+            db.execSQL("DROP TABLE IF EXISTS DienThoai");
+            db.execSQL("DROP TABLE IF EXISTS GioHang");
+            db.execSQL("DROP TABLE IF EXISTS DonHangChiTiet");
+            db.execSQL("DROP TABLE IF EXISTS DonHang");
+            db.execSQL("DROP TABLE IF EXISTS KhachHang");
             onCreate(db);
         }
     }
